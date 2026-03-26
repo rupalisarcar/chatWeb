@@ -1,17 +1,19 @@
-const express = require("express");
-const router = express.Router();
+import express from "express";
+import { signUp, login, logOut, updatedProfile } from "../controllers/auth.controller.js";
+import { protectRoute } from "../middlewares/auth.middleware.js";
+import { upload } from "../middlewares/upload.middleware.js";
+
+const  router = express.Router();
 
 
-router.get('/endpoint',(req,res)=>{
-    res.send("Signup Endpoint")
-})
+router.post('/signup', signUp)
 
-router.get('/login',(req,res)=>{
-    res.send("Login Endpoint")
-})
+router.post('/login', login)
 
-router.get('/logout',(req,res)=>{
-    res.send("Logout Endpoint")
-})
+router.post('/logout', logOut)
 
-module.exports = router;
+router.put('/update-profile', protectRoute, upload.single('profilePic'), updatedProfile)
+
+router.get("/check", protectRoute, (req, res) => res.status(200).json(req.user));
+
+export default router;
